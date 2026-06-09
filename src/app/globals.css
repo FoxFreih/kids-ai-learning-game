@@ -1,0 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Comic Neue", cursive;
+  overflow: hidden;
+}
+
+@layer utilities {
+  .text-shadow-kid {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
