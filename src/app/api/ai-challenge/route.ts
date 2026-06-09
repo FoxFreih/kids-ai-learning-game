@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey || apiKey === "your-api-key-here") return null;
+
+  const OpenAI = require("openai").default;
+  return new OpenAI({ apiKey });
+}
 
 const SYSTEM_PROMPT = `أنت معلم أطفال محترف. تصنع أسئلة تعليمية ممتعة للأطفال بعمر 3-6 سنوات.
 
@@ -81,8 +84,9 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get("category") || "colors";
   const difficulty = searchParams.get("difficulty") || "easy";
 
-  // إذا لم يكن هناك مفتاح API، استخدم الأسئلة الاحتياطية
-  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "your-api-key-here") {
+  const openai = getOpenAIClient();
+
+  if (!openai) {
     const pool = fallbackChallenges[category] || fallbackChallenges.colors;
     const challenge = pool[Math.floor(Math.random() * pool.length)] as Record<string, unknown>;
     if (Array.isArray(challenge.options)) {
